@@ -8,7 +8,7 @@ from urllib.parse import unquote, urlparse
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
+from playwright_stealth import Stealth
 
 # লগিং কনফিগারেশন
 logging.basicConfig(
@@ -54,7 +54,9 @@ async def bypass_engine(short_url: str) -> str:
             viewport={'width': 1920, 'height': 1080}
         )
         page = await context.new_page()
-        await stealth_async(page)
+        
+        # আপডেট করা Stealth মোড (এরর-ফ্রি)
+        await Stealth().apply_to(page)
 
         try:
             # পপ-আপ অ্যাড ট্যাব স্বয়ংক্রিয়ভাবে বন্ধ করা
@@ -85,7 +87,6 @@ async def bypass_engine(short_url: str) -> str:
 async def process_and_send_file(update: Update, direct_url: str, status_msg):
     download_path = None
     try:
-        # হেড রিকোয়েস্ট পাঠ্যে ফাইলের তথ্য নেওয়া
         headers = {'User-Agent': 'Mozilla/5.0'}
         head_req = requests.head(direct_url, allow_redirects=True, headers=headers, timeout=15)
         content_type = head_req.headers.get('content-type', '').lower()
@@ -138,7 +139,6 @@ async def process_and_send_file(update: Update, direct_url: str, status_msg):
             elif content_type.startswith('audio/'):
                 await update.message.reply_audio(audio=file_data, caption=f"🎵 **গান/অডিও:** `{filename}`", parse_mode="Markdown")
             else:
-                # APK, ZIP, RAR, PDF এবং সকল ফাইল ডকুমেন্ট মোডে সেন্ড হবে
                 await update.message.reply_document(
                     document=file_data,
                     filename=filename,
@@ -156,7 +156,6 @@ async def process_and_send_file(update: Update, direct_url: str, status_msg):
         )
 
     finally:
-        # কাজ শেষে সাথে সাথে সার্ভারের মেমোরি খালি করে ফাইল ডিলিট করা
         if download_path and os.path.exists(download_path):
             try:
                 os.remove(download_path)
