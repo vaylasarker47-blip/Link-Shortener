@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 🔑 আপনার BotFather API Token এখানে বসান
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN_HERE"
+BOT_TOKEN = "8976523565:AAGPujCB3mmZs4cmxBBz4M8PnneOziyrtDM"
 
 # টেলিগ্রাম বটে ফাইল আপলোডের সর্বোচ্চ সাইজ (50 MB Limit)
 MAX_FILE_SIZE_MB = 50  
