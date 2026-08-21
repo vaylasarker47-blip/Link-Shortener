@@ -1,0 +1,3 @@
+pip install python-telegram-bot playwright playwright-stealth requests urllib3
+playwright install chromium
+playwright install-deps
